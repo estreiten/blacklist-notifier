@@ -19,7 +19,7 @@ for (let index = 0; index < hosts.length; index++) {
   const host = hosts[index];
   log(`Blacklist check for '${host}' started`)
   const logFile = `logs/${host}.log`
-  const process = spawn(`blcheck ${host}`, spawnParams)
+  const process = spawn(`${__dirname}/blcheck`, [host], spawnParams)
   let out = ''
   process.stdout.on('data', data => {
     out += `${data}\n`
