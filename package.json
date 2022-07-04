@@ -1,0 +1,15 @@
+{
+  "name": "blacklist-notifier",
+  "version": "1.0.0",
+  "description": "Notifies when a mail domain is blacklisted",
+  "main": "server.js",
+  "author": "Ezequiel Streitenberger <ezequiel@estreiten.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estreiten/blacklist-notifier.git"
+  },
+  "homepage": "https://github.com/estreiten/blacklist-notifier",
+  "dependencies": {
+    "nodemailer": "^6.7.6"
+  }
+}
