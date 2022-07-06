@@ -10,9 +10,23 @@ const log = (txt) => {
   console.log(`${new Date().toISOString()}  ${txt}`)
 }
 
-const notify = (host, logFile, out) => {
-  fs.writeFileSync(logFile, out)
-  mailService.send(`Blacklist update: ${host}`, `Blacklist information updated for ${host}`, out)
+const notify = (host, logFile, result) => {
+  fs.writeFileSync(logFile, result.urls.join('\r\n'))
+  mailService.send(`Blacklist update: ${host}`, `Blacklist information updated for ${host}`, result.html)
+}
+
+const parse = (out) => {
+  const consoleRegex = /(\(B)|(\[m)|(\[3.m)|(\u001b)/g
+  out = out.replace(consoleRegex, '')
+  const pivot = out.indexOf('--')
+  const data = out.substring(0, pivot)
+  const result = out.substring(pivot)
+  const urlRegex = /(.*[^(Warning)]\:)/g
+  const urls = data.match(urlRegex).map(url => url.replace(' :', ''))
+  return {
+    urls, 
+    html: urls.length > 0 ? result + 'Blacklist sites where detected:<br><br>' + urls.map(url => `- ${url}`).join('<br>') : result
+  }
 }
 
 for (let index = 0; index < hosts.length; index++) {
@@ -31,16 +45,17 @@ for (let index = 0; index < hosts.length; index++) {
     out += `error ${err.name}: ${err.message}\n`
   })
   process.on('close', code => {
-    out += `==== The output is ${code} ====\n`
+    const result = parse(out)
     if (fs.existsSync(logFile)) {
-      const last = fs.readFileSync(logFile)
-      if (last.toString() !== out) {
+      const last = fs.readFileSync(logFile, 'utf8')
+      const lastUrls = last.split(/\r?\n/)
+      if (JSON.stringify(lastUrls) !== JSON.stringify(result.urls)) {
         log(`Status changed for '${host}', sending notification`)
-        notify(host, logFile, out)
+        notify(host, logFile, result)
       }
     } else {
       log(`Status changed for '${host}', sending notification`)
-      notify(host, logFile, out)
+      notify(host, logFile, result)
     }
     log(`Blacklist check for '${host}' completed with status ${code}`)
   })
