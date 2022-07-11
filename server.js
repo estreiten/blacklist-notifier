@@ -22,7 +22,8 @@ const parse = (out) => {
   const data = out.substring(0, pivot)
   const result = out.substring(pivot)
   const urlRegex = /(.*[^(Warning)]\:)/g
-  const urls = data.match(urlRegex).map(url => url.replace(' :', ''))
+  const rawUrls = data.match(urlRegex)
+  const urls = rawUrls !== null ? rawUrls.map(url => url.replace(' :', '')) : []
   return {
     urls, 
     html: urls.length > 0 ? result + 'Blacklist sites where detected:<br><br>' + urls.map(url => `- ${url}`).join('<br>') : result
