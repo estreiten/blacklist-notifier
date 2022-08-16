@@ -50,7 +50,7 @@ for (let index = 0; index < hosts.length; index++) {
     if (fs.existsSync(logFile)) {
       const last = fs.readFileSync(logFile, 'utf8')
       const lastUrls = last.split(/\r?\n/)
-      if (JSON.stringify(lastUrls) !== JSON.stringify(result.urls)) {
+      if ((result.urls.length === 0 && last.length > 0) || (result.urls.length > 0 && (JSON.stringify(lastUrls) !== JSON.stringify(result.urls)))) {
         log(`Status changed for '${host}', sending notification`)
         notify(host, logFile, result)
       }
