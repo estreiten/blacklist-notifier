@@ -9,3 +9,7 @@ This tool uses the [IntellexApps' blcheck](https://github.com/IntellexApps/blche
     <pre>chmod +x blcheck</pre>
 
 6. Run with `npm start`
+
+### Custom Blacklists
+If you want to set your own custom set of blacklist sites, just create a `blacklists.txt` file with every blacklist site separated by a space.<br>
+You have a template in the `blacklists.example.txt` file, just rename it to `blacklists.txt` to use it.

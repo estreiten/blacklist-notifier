@@ -32,9 +32,14 @@ const parse = (out) => {
 
 for (let index = 0; index < hosts.length; index++) {
   const host = hosts[index];
+  let args = [host]
+  if (fs.existsSync('blacklists.txt')) {
+    log('Using custom blacklist file')
+    args.unshift('-l', 'blacklists.txt')
+  }
   log(`Blacklist check for '${host}' started`)
   const logFile = `logs/${host}.log`
-  const process = spawn(`${__dirname}/blcheck`, [host], spawnParams)
+  const process = spawn(`${__dirname}/blcheck`, args, spawnParams)
   let out = ''
   process.stdout.on('data', data => {
     out += `${data}\n`
